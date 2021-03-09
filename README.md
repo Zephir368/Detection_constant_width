@@ -1,2 +1,3 @@
 # Detection_constant_width
-Mini porject for the detection homework class
+Mini project for the class Detection Theory and Industrial Applications.
+The aim of this project is to detect constant width.

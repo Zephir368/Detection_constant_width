@@ -1,9 +1,10 @@
 import numpy as np
+from tqdm import tqdm
 
 
 def length_segment(line):
     """
-
+    Returns the length of a segment
     :param line:
     :return:
     """
@@ -45,14 +46,25 @@ def segment_intersection(line_1, line_2):
     right = min(max(projected_line_1[0], projected_line_1[2]), max(line_2[0], line_2[2]))
     top = max(min(projected_line_1[1], projected_line_1[3]), min(line_2[1], line_2[3]))
     bottom = min(max(projected_line_1[1], projected_line_1[3]), max(line_2[1], line_2[3]))
+
+    # no intersection or point intersection
+    if top > bottom or left > right or (top == bottom and left == right):
+        return 0
     point_1_inter = np.array((left, bottom))
     point_2_inter = np.array((right, top))
     return np.linalg.norm(point_1_inter - point_2_inter) / max(length_segment(line_1), length_segment(line_2))
 
 
-def return_aligned_segment(lines, index_segments, threshold=.7):
+def return_aligned_segments(lines, index_segments, threshold=.7):
+    """
+    Returns the pairs of index of the segments from index_segments that are aligned
+    :param lines:
+    :param index_segments:
+    :param threshold:
+    :return: list of lists of two elements (indexes)
+    """
     aligned_index_segments = []
-    for (index_1, index_2) in index_segments:
+    for (index_1, index_2) in tqdm(index_segments):
         alignment_measure = segment_intersection(lines[index_1], lines[index_2])
         if alignment_measure > threshold:
             aligned_index_segments.append([index_1, index_2])

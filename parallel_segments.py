@@ -1,4 +1,5 @@
 import numpy as np
+from tqdm import tqdm
 
 
 def angle_of_vectors(a_x, a_y, b_x, b_y):
@@ -16,7 +17,7 @@ def angle_of_vectors(a_x, a_y, b_x, b_y):
 
     angle = dotProduct / modOfVector1
     angleInDegree = np.rad2deg(np.arccos(angle))
-    angleInDegree = np.min(np.concatenate(([angleInDegree], [180 - angleInDegree]), axis=0), axis=0)
+    angleInDegree = np.minimum(angleInDegree, 180-angleInDegree)
     return angleInDegree
 
 
@@ -35,7 +36,7 @@ def compute_parallel_segments(lines, tau):
     b_x = lines[:, 2]
     vec_x = b_x - a_x
     vec_y = b_y - a_y
-    for index_line in range(nb_lines - 1):
+    for index_line in tqdm(range(nb_lines - 1)):
         theta = angle_of_vectors(vec_x[index_line], vec_y[index_line], vec_x[index_line + 1:], vec_y[index_line + 1:])
         index_lines = np.arange(index_line + 1, nb_lines)
         indexes_matching = [i for i in index_lines[theta < tau]]
