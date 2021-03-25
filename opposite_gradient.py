@@ -71,7 +71,7 @@ def return_opposed_gradient(lines, index_segments):
         pt2 = lines[index_1, 2:4]
         pt3 = lines[index_2, 0:2]
         pt4 = lines[index_2, 2:4]
-        if distance2points(pt2, pt3) < distance2points(pt2, pt4) \
-                and distance2points(pt1, pt4) < distance2points(pt1, pt3):
+        if distance2points(pt2, pt3) < distance2points(pt2, pt4):# \
+                #and distance2points(pt1, pt4) < distance2points(pt1, pt3):
             opposed_gradient_index_segments.append([index_1, index_2])
     return opposed_gradient_index_segments

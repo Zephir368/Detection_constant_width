@@ -1,0 +1,8 @@
+numpy~=1.18.0
+tqdm~=4.56.0
+matplotlib~=3.3.4
+pillow~=8.1.2
+pylsd~=0.0.2
+scikit-image~=0.17.2
+seaborn~=0.11.1
+pylsd-nova

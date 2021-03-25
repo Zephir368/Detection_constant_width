@@ -21,5 +21,5 @@ for i in range(lines.shape[0]):
     length_segments[i] = length_segment(lines[i])
 
 sns.set_theme()
-sns.histplot(data=length_segments/680, kde=True, stat="density")
+sns.histplot(data=length_segments, kde=True, stat="density")
 plt.show()

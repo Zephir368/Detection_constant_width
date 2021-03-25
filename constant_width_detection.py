@@ -1,9 +1,12 @@
 import numpy as np
+from pylsd.lsd import lsd
 
 from parallel_segments import compute_parallel_segments
 from aligned_segments import return_aligned_segments
 from opposite_gradient import return_opposed_gradient
 from proximity_segments import return_proximity_segments
+
+from NFA import return_NFA
 
 
 def return_middle(line):
@@ -15,15 +18,27 @@ def return_middle(line):
     return 1 / 2 * np.array([line[0] + line[2], line[1] + line[3]])
 
 
-def constant_width(lines, tau=20, threshold=.5):
+def constant_width(img, tau=20, thres=.5, compute_param=False):
     """
 
     :param img:
-    :param lines:
     :param tau:
-    :param threshold:
+    :param thres:
+    :param compute_param:
     :return:
     """
+    lines = lsd(img)
+    if compute_param:
+        thres_values = np.array([.1 * n for n in range(10)])
+        NFA_values = np.zeros(10)
+        for i in range(10):
+            NFA_values[i] = return_NFA(img, tau, thres_values[i])
+        best_index = np.argmin((NFA_values - 1)**2)
+        threshold = thres_values[best_index]
+        print("threshold = ", threshold)
+    else:
+        threshold = thres
+
     # test parallel segments
     print("\n****   begin parallel test   *****")
     index_segments = compute_parallel_segments(lines, tau=tau)
@@ -39,4 +54,7 @@ def constant_width(lines, tau=20, threshold=.5):
     # test proximity
     print("\n****   begin proximity test   *****")
     index_segments = return_proximity_segments(lines, index_segments)
+
+    print(f"\n****   NFA= {return_NFA(img, tau, threshold)}   *****")
+
     return index_segments

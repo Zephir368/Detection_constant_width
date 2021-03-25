@@ -2,12 +2,27 @@ from PIL import Image, ImageDraw
 import numpy as np
 from pylsd.lsd import lsd
 import matplotlib.pyplot as plt
+import argparse
 
 from constant_width_detection import constant_width
 
-img_path = "Urben100/img_001_SRF_4_HR.png"
-# img_path = "images/chairs.png"
-img = Image.open(img_path)
+
+parser = argparse.ArgumentParser(description='Detection Constant width script')
+parser.add_argument('--img_path', type=str, default="images/double_circle.png", metavar='P',
+                    help='path of the image')
+parser.add_argument('--tau', type=float, default=10, metavar='TA',
+                    help='parameter for parallelism')
+parser.add_argument('--thres', type=float, default=.5, metavar='TH',
+                    help='parameter for overlapping')
+parser.add_argument('--NFA', type=float, default=1, metavar='N',
+                    help='Number of false alerts')
+parser.add_argument('--compute_param', type=bool, default=False, metavar='C',
+                    help='If True will compute the thres such that NFA is around 1')
+
+
+args = parser.parse_args()
+
+img = Image.open(args.img_path)
 
 mode = 'RGB'  # for color image “L” (luminance) for greyscale images, “RGB” for true color images
 size = img.size[:2]
@@ -24,11 +39,7 @@ draw = ImageDraw.Draw(im)
 draw_2 = ImageDraw.Draw(im_2)
 # draw constant width
 
-# parameters for constant width detection
-tau = 10
-thres = .5
-
-index_matching_lines = constant_width(lines, tau=tau, threshold=thres)
+index_matching_lines = constant_width(gray, tau=args.tau, thres=args.thres, compute_param=args.compute_param)
 nb_pairs = len(index_matching_lines)
 
 # show detected constant width
@@ -43,9 +54,7 @@ for pair_matching in range(nb_pairs):
     c1, c2, c3 = np.random.randint(0, 200), np.random.randint(0, 255), np.random.randint(0, 255)
     draw_2.polygon(pts, fill=(c1, c2, c3))
 
-    width = lines[i, 4]
     draw_2.line((pt1, pt2), fill=(255, 0, 0), width=1)
-    width = lines[j, 4]
     draw_2.line((pt3, pt4), fill=(255, 0, 0), width=1)
 
 # show detected lines
@@ -55,14 +64,16 @@ for i in range(lines.shape[0]):
     width = lines[i, 4]
     draw.line((pt1, pt2), fill=(255, 0, 0), width=1)
 
-plt.axis("off")
-plt.imshow(img)
-plt.show()
 
-plt.axis("off")
-plt.imshow(im)
-plt.show()
+if __name__ == '__main__':
+    plt.axis("off")
+    plt.imshow(img)
+    plt.show()
 
-plt.axis("off")
-plt.imshow(im_2)
-plt.show()
+    plt.axis("off")
+    plt.imshow(im)
+    plt.show()
+
+    plt.axis("off")
+    plt.imshow(im_2)
+    plt.show()
